@@ -2,66 +2,22 @@ package team.projectpulse.ram.document.template;
 
 import team.projectpulse.ram.requirement.SectionType;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DocumentTemplate {
+/**
+ * A requirement document template, loaded once from YAML into the singleton {@link DocumentTemplateRegistry} and
+ * handed to every caller of {@code find()}. It is immutable so that no caller can change the template that every
+ * later document is created from.
+ */
+public record DocumentTemplate(String title, List<SectionTemplate> sections) {
 
-    private String title;
-    private List<SectionTemplate> sections = new ArrayList<>();
-
-    public String getTitle() {
-        return title;
+    public DocumentTemplate {
+        // A template file with no "sections:" key is allowed and yields no sections. A null entry inside the list
+        // means a broken template file, and List.copyOf rejects it, so the application fails at startup.
+        sections = sections == null ? List.of() : List.copyOf(sections);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public record SectionTemplate(String sectionKey, String title, SectionType type, String guidance) {
     }
 
-    public List<SectionTemplate> getSections() {
-        return sections;
-    }
-
-    public void setSections(List<SectionTemplate> sections) {
-        this.sections = sections;
-    }
-
-    public static class SectionTemplate {
-        private String sectionKey;
-        private String title;
-        private SectionType type;
-        private String guidance;
-
-        public String getSectionKey() {
-            return sectionKey;
-        }
-
-        public void setSectionKey(String sectionKey) {
-            this.sectionKey = sectionKey;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public SectionType getType() {
-            return type;
-        }
-
-        public void setType(SectionType type) {
-            this.type = type;
-        }
-
-        public String getGuidance() {
-            return guidance;
-        }
-
-        public void setGuidance(String guidance) {
-            this.guidance = guidance;
-        }
-    }
 }
