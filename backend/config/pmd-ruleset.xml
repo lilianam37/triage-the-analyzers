@@ -15,6 +15,12 @@
     <rule ref="rulesets/java/quickstart.xml">
         <!-- D2: UnnecessaryConstructor is narrowed, not dropped; it is re-added below with the narrowing. -->
         <exclude name="UnnecessaryConstructor"/>
+        <!-- D4: GuardLogStatement is off. Project Pulse logs only through SLF4J with {} placeholders, so a message
+             is formatted only when its level is enabled, and every argument passed (getName(), size(), getEmail(),
+             an array length) is a cheap accessor. Most flagged calls are info or error, which are on in production,
+             so a guard would never skip anything. Revisit if a log call ever builds its argument (string
+             concatenation, a stream, a toString() over a collection). -->
+        <exclude name="GuardLogStatement"/>
     </rule>
 
     <!-- D2: UnnecessaryConstructor is off for JPA entities and enforced everywhere else. JPA requires an entity to
