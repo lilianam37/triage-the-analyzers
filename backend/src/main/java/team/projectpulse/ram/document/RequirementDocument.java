@@ -53,6 +53,7 @@ public class RequirementDocument {
 
 
     public RequirementDocument() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public void addSection(DocumentSection section) {

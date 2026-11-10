@@ -70,6 +70,7 @@ public class DocumentSection {
 
 
     public DocumentSection() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     /* ---------- Convenience helpers ---------- */

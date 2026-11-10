@@ -13,5 +13,19 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>PMD quickstart, with Project Pulse's decisions.</description>
     <rule ref="rulesets/java/quickstart.xml">
+        <!-- D2: UnnecessaryConstructor is narrowed, not dropped; it is re-added below with the narrowing. -->
+        <exclude name="UnnecessaryConstructor"/>
+    </rule>
+
+    <!-- D2: UnnecessaryConstructor is off for JPA entities and enforced everywhere else. JPA requires an entity to
+         have a no-arg constructor. When it is the only constructor, deleting it compiles and still works, until
+         someone adds a constructor with arguments: the implicit default then disappears and Hibernate fails at
+         runtime, not at compile time. The explicit constructor, with its "Required by JPA" comment, prevents that.
+         UncommentedEmptyConstructor stays enforced everywhere, entities included: that comment is its fix. -->
+    <rule ref="category/java/codestyle.xml/UnnecessaryConstructor">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="./ancestor-or-self::ClassDeclaration[pmd-java:hasAnnotation('jakarta.persistence.Entity')]"/>
+        </properties>
     </rule>
 </ruleset>

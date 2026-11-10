@@ -33,6 +33,7 @@ public class UseCaseLock {
 
 
     public UseCaseLock() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public boolean isLocked(Instant now) {

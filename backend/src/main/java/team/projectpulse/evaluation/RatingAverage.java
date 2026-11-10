@@ -7,6 +7,7 @@ public class RatingAverage {
 
 
     public RatingAverage() {
+        // Kept for Jackson, so a client can deserialize this response type; nothing in this codebase calls it.
     }
 
     public RatingAverage(Integer criterionId, Double averageScore) {

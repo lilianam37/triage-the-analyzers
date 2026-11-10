@@ -52,6 +52,7 @@ public class Section {
 
 
     public Section() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public Section(String sectionName,

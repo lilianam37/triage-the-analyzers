@@ -29,7 +29,7 @@ public class UseCaseMainStep {
 
     
     public UseCaseMainStep() {
-
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public UseCaseMainStep(Long id, String actor, String actionText) {
