@@ -19,6 +19,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -34,6 +35,9 @@ class TeamIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     JsonMapper jsonMapper;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     String adminBingyangToken;
 
@@ -110,6 +114,36 @@ class TeamIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.code").value(StatusCode.SUCCESS))
                 .andExpect(jsonPath("$.message").value("Find teams successfully"))
                 .andExpect(jsonPath("$.data.content", Matchers.hasSize(1)));
+    }
+
+    // PMD UseLocaleWithCaseConversions on TeamSpecs.containsTeamName, end to end: on a server whose default locale
+    // is Turkish, a search for "IRIS" must still find the team named "Iris".
+    @Test
+    void adminBingyangFindsTeamByNameUnderTurkishDefaultLocale() throws Exception {
+        // Given: Team1, in Bingyang's section, renamed to a name containing an i (rolled back after the test)
+        Team team = this.teamRepository.findById(1).orElseThrow();
+        team.setTeamName("Iris");
+        this.teamRepository.saveAndFlush(team);
+
+        Map<String, String> searchCriteria = new HashMap<>();
+        searchCriteria.put("teamName", "IRIS");
+        String json = this.jsonMapper.writeValueAsString(searchCriteria);
+
+        MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("page", "0");
+        requestParams.add("size", "10");
+
+        Locale originalLocale = Locale.getDefault();
+        Locale.setDefault(Locale.forLanguageTag("tr-TR"));
+        try {
+            // When and then
+            this.mockMvc.perform(post(this.baseUrl + "/teams/search").contentType(MediaType.APPLICATION_JSON).content(json).params(requestParams).accept(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION, this.adminBingyangToken))
+                    .andExpect(jsonPath("$.flag").value(true))
+                    .andExpect(jsonPath("$.data.content", Matchers.hasSize(1)))
+                    .andExpect(jsonPath("$.data.content[0].teamName").value("Iris"));
+        } finally {
+            Locale.setDefault(originalLocale);
+        }
     }
 
     @Test
