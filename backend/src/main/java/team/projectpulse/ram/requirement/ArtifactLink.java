@@ -51,6 +51,7 @@ public class ArtifactLink {
 
 
     public ArtifactLink() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public Long getId() {

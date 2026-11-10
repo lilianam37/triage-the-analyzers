@@ -103,22 +103,22 @@ public class DocumentService {
     }
 
     private void applyTemplate(RequirementDocument doc, DocumentTemplate tpl) {
-        doc.setTitle(tpl.getTitle() != null ? tpl.getTitle() : doc.getType().name());
+        doc.setTitle(tpl.title() != null ? tpl.title() : doc.getType().name());
 
-        if (tpl.getSections() == null || tpl.getSections().isEmpty()) {
+        if (tpl.sections().isEmpty()) { // DocumentTemplate never returns null sections
             return;
         }
 
-        for (DocumentTemplate.SectionTemplate sectionTemplate : tpl.getSections()) {
+        for (DocumentTemplate.SectionTemplate sectionTemplate : tpl.sections()) {
             DocumentSection section = new DocumentSection();
-            section.setSectionKey(sectionTemplate.getSectionKey());
-            section.setTitle(sectionTemplate.getTitle());
-            section.setType(sectionTemplate.getType());
+            section.setSectionKey(sectionTemplate.sectionKey());
+            section.setTitle(sectionTemplate.title());
+            section.setType(sectionTemplate.type());
             section.setContent(null);
-            if (sectionTemplate.getType() == SectionType.LIST) {
+            if (sectionTemplate.type() == SectionType.LIST) {
                 section.setRequirementArtifacts(new ArrayList<>());
             }
-            section.setGuidance(sectionTemplate.getGuidance());
+            section.setGuidance(sectionTemplate.guidance());
             section.initLockIfMissing();
 
             doc.addSection(section);

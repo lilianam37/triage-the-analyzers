@@ -16,6 +16,7 @@ public class Result {
 
 
     public Result() {
+        // Kept for Jackson, so a client can deserialize this response type; nothing in this codebase calls it.
     }
 
     public Result(boolean flag, Integer code, String message) {

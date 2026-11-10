@@ -19,6 +19,7 @@ public class UseCaseExtensionStep {
 
 
     public UseCaseExtensionStep() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public UseCaseExtensionStep(String actor, String actionText) {

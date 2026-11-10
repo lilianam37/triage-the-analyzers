@@ -7,4 +7,20 @@
 
      Unlike the baseline, this file may grow, but every entry is a reviewed decision. -->
 <FindBugsFilter>
+  <!-- D1: EI_EXPOSE_REP and EI_EXPOSE_REP2 are off for the whole project. The rule asks for defensive copies of
+       mutable fields, and on 2026-11-01 its 219 findings fell into four groups, none of which wants one:
+       - 144 on JPA entities. Their getters return associations and collections that Hibernate manages; a copy
+         would make changes such as getSections().add(x) invisible to dirty checking and orphanRemoval.
+       - 27 on Spring constructor injection. Storing the shared singleton bean that was passed in is the point.
+       - 36 on records (DTOs, ReminderService.ReminderResult) that Jackson builds, serializes and discards within
+         one request.
+       - 12 on plain classes. PeerEvaluationAverage and WeeklyPeerEvaluationReport are built per request, and
+         MyUserPrincipal wraps the user entity. DocumentTemplate was the one real case: the singleton
+         DocumentTemplateRegistry handed every caller the same mutable template. It is now an immutable record.
+       The project has no java.util.Date, Calendar, Timestamp or array fields, the cases this rule exists for.
+       SpotBugs filters cannot match an annotation such as @Entity, so the exclusion cannot be narrower than this.
+       Revisit if the project adds a cache or another long-lived object handed out to callers. -->
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+  </Match>
 </FindBugsFilter>

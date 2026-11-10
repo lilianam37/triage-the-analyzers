@@ -25,6 +25,7 @@ public class Rubric {
 
 
     public Rubric() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public Rubric(String rubricName) {

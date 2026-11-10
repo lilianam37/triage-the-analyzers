@@ -36,6 +36,7 @@ public class Comment {
 
 
     public Comment() {
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public Long getId() {

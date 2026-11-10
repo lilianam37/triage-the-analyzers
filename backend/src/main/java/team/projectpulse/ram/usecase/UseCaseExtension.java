@@ -56,7 +56,7 @@ public class UseCaseExtension {
 
 
     public UseCaseExtension() {
-
+        // Required by JPA: Hibernate instantiates entities through the no-arg constructor.
     }
 
     public UseCaseExtension(String conditionText, ExtensionKind kind, ExtensionExit extensionExit) {
